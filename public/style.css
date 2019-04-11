@@ -1,0 +1,31 @@
+#header-bar {
+  max-width: 100%;
+}
+
+#half-screen-container {
+  display: flex;
+  flex-flow: row nowrap;
+}
+
+.col-50-50-container {
+  height: auto;
+  width: 59%;
+  margin: 10px;
+}
+
+#booking-module {
+  height: auto;
+  max-width: 376px;
+  min-width: 300px;
+  float: left;
+  position: sticky;
+  top: 1rem;
+  bottom: 1rem;
+  margin-top: 20px;
+  margin-left: 20px;
+}
+
+.home-info {
+  width: 100%;
+  max-width: 100%;
+}
