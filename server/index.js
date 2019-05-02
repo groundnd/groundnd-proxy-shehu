@@ -30,17 +30,33 @@ app.get('/photosandcomments/:accommodationid', (req, res) => {
 
 app.get('/bookings/:accommodationid', (req, res) => {
   
-  axios.get(`http://${loadBalancerIP}/bookings/${req.params.accommodationid}`)
-    .then(response => {
-      res.send(response.data);
-    });
+  return getRedisAsync(`${req.params.accommodationid}-accommodation`)
+  .then(async (result) => {
+    if (result) {
+      res.send(result);
+    } else {
+      axios.get(`http://${loadBalancerIP}/bookings/${req.params.accommodationid}`)
+        .then(response => {
+          res.send(response.data);
+        });
+        setRedisAsync(`${req.params.accommodationid}-accommodation`, 3600, response.data)
+    }
+  })
 });
 
 app.get('/bookings/:accommodationid/:startDate&:endDate', (req, res) => {
-  axios.get(`http://${loadBalancerIP}/bookings/${req.params.accommodationid}/${req.params.startDate}&${req.params.endDate}`)
-    .then(response => {
-      res.send(response.data);
-    });
+  return getRedisAsync(`${req.params.accommodationid}-reservations`)
+  .then(async (result) => {
+    if (result) {
+      res.send(result);
+    } else {
+      axios.get(`http://${loadBalancerIP}/bookings/${req.params.accommodationid}/${req.params.startDate}&${req.params.endDate}`)
+        .then(response => {
+          res.send(response.data);
+        });
+        setRedisAsync(`${req.params.accommodationid}-reservations`, 3600, response.data)
+    }
+  })
 });
 
 app.get('/abodes/:abode_id/reviews', (req, res) => {
