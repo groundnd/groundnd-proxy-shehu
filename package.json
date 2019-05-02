@@ -21,9 +21,11 @@
     "axios": "^0.18.0",
     "express": "^4.16.4",
     "morgan": "^1.9.1",
+    "newrelic": "^5.7.0",
     "nodemon": "^1.18.11"
   },
   "devDependencies": {
+    "dotenv": "^7.0.0",
     "eslint": "^5.16.0",
     "eslint-config-airbnb": "^17.1.0",
     "grunt": "^1.0.4"
