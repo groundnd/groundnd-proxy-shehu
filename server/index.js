@@ -41,7 +41,7 @@ app.get('/bookings/:accommodationid', (req, res) => {
       axios.get(`http://${loadBalancerIP}/bookings/${req.params.accommodationid}`)
         .then(response => {
           res.send(response.data);
-          setRedisAsync(`${req.params.accommodationid}-accommodation`, 3600, response.data)
+          setRedisAsync(`${req.params.accommodationid}-accommodation`, 3600, response.data.toString())
         });
     }
   })
@@ -56,7 +56,7 @@ app.get('/bookings/:accommodationid/:startDate&:endDate', (req, res) => {
       axios.get(`http://${loadBalancerIP}/bookings/${req.params.accommodationid}/${req.params.startDate}&${req.params.endDate}`)
         .then(response => {
           res.send(response.data);
-          setRedisAsync(`${req.params.accommodationid}-reservations`, 3600, response.data)
+          setRedisAsync(`${req.params.accommodationid}-reservations`, 3600, response.data.toString())
         });
     }
   })
