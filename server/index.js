@@ -6,6 +6,7 @@ const path = require('path');
 const redis = require("redis");
 const axios = require('axios');
 const { promisify } = require('util');
+const compression = require('compression');
 
 const redisPort = process.env.REDISPORT || 6379;
 const redisHost = process.env.REDISHOST || localhost;
@@ -22,6 +23,7 @@ client.auth(process.env.REDISPASS, () => { console.log('Password correct!') });
 
 app.get('/', (req, res) => res.redirect(`/${Math.floor(Math.random()* 100)}`));
 
+app.use(compression());
 app.use('/:roomid', express.static(path.join(__dirname, '../public')));
 
 app.get('/photosandcomments/:accommodationid', (req, res) => {
