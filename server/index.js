@@ -1,16 +1,25 @@
+require('newrelic');
+require('dotenv').config();
 const express = require('express');
 const morgan = require('morgan');
 const path = require('path');
+const redis = require("redis");
 const axios = require('axios');
 
+const getRedisAsync = promisify(client.get).bind(client);
+const setRedisAsync = promisify(client.setex).bind(client);
 const app = express();
 const port = process.env.PORT || 3000;
+const loadBalancerIP = process.env.LOADBALANCEIP || '18.144.55.17';
+const redisPort = process.env.REDISPORT || 6379;
+const redisHost = process.env.REDISHOST || localhost;
+const client = redis.createClient(redisPort, redisHost);
 
-app.use(morgan('dev'));
+// app.use(morgan('dev'));
 
-app.get('/', (req, res) => res.redirect(`/bookings/${Math.floor(Math.random()* 100)}`));
+app.get('/', (req, res) => res.redirect(`/${Math.floor(Math.random()* 100)}`));
 
-app.use('/bookings/:roomid', express.static(path.join(__dirname, '../public')));
+app.use('/:roomid', express.static(path.join(__dirname, '../public')));
 
 app.get('/photosandcomments/:accommodationid', (req, res) => {
   axios.get(`http://localhost:3001/photosandcomments/${req.params.accommodationid}`)
@@ -19,15 +28,16 @@ app.get('/photosandcomments/:accommodationid', (req, res) => {
     });
 });
 
-app.get('/bookings/:accommodationid/reserve', (req, res) => {
-  axios.get(`http://localhost:3003/bookings/${req.params.accommodationid}/reserve`)
+app.get('/bookings/:accommodationid', (req, res) => {
+  
+  axios.get(`http://${loadBalancerIP}/bookings/${req.params.accommodationid}`)
     .then(response => {
       res.send(response.data);
     });
 });
 
-app.get('/bookings/:accommodationid/reserve/:startDate&:endDate', (req, res) => {
-  axios.get(`http://localhost:3003/bookings/${req.params.accommodationid}/reserve/${req.params.startDate}&${req.params.endDate}`)
+app.get('/bookings/:accommodationid/:startDate&:endDate', (req, res) => {
+  axios.get(`http://${loadBalancerIP}/bookings/${req.params.accommodationid}/${req.params.startDate}&${req.params.endDate}`)
     .then(response => {
       res.send(response.data);
     });
@@ -48,3 +58,11 @@ app.get('/homes', (req, res) => {
 });
 
 app.listen(port, () => console.log(`Listening on port ${port}`));
+
+client.on('connect', function() {
+  console.log('Redis client connected');
+});
+
+client.on('error', function (err) {
+  console.log('Something went wrong ' + err);
+});
