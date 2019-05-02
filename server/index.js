@@ -7,6 +7,7 @@ const redis = require("redis");
 const axios = require('axios');
 const { promisify } = require('util');
 
+const client = redis.createClient();
 const getRedisAsync = promisify(client.get).bind(client);
 const setRedisAsync = promisify(client.setex).bind(client);
 const app = express();
