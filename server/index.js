@@ -5,6 +5,7 @@ const morgan = require('morgan');
 const path = require('path');
 const redis = require("redis");
 const axios = require('axios');
+const { promisify } = require('util');
 
 const getRedisAsync = promisify(client.get).bind(client);
 const setRedisAsync = promisify(client.setex).bind(client);
