@@ -7,14 +7,14 @@ const redis = require("redis");
 const axios = require('axios');
 const { promisify } = require('util');
 
+const redisPort = process.env.REDISPORT || 6379;
+const redisHost = process.env.REDISHOST || localhost;
 const client = redis.createClient(redisPort, redisHost);
 const getRedisAsync = promisify(client.get).bind(client);
 const setRedisAsync = promisify(client.setex).bind(client);
 const app = express();
 const port = process.env.PORT || 3000;
 const loadBalancerIP = process.env.LOADBALANCEIP || '18.144.55.17';
-const redisPort = process.env.REDISPORT || 6379;
-const redisHost = process.env.REDISHOST || localhost;
 
 // app.use(morgan('dev'));
 
