@@ -18,6 +18,8 @@ const loadBalancerIP = process.env.LOADBALANCEIP || '18.144.55.17';
 
 // app.use(morgan('dev'));
 
+client.auth(process.env.REDISPASS, () => { console.log('Password correct!') });
+
 app.get('/', (req, res) => res.redirect(`/${Math.floor(Math.random()* 100)}`));
 
 app.use('/:roomid', express.static(path.join(__dirname, '../public')));
